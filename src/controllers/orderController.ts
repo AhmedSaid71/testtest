@@ -58,7 +58,7 @@ export const createCheckoutSession = catchAsync(
 
     const newOrder = await Order.create({
       restaurant: restaurant,
-      user: req.user._id,
+      user: req.user?._id,
       status: "placed",
       deliveryDetails: checkoutSessionRequest.deliveryDetails,
       cartItems: checkoutSessionRequest.cartItems,
@@ -90,7 +90,7 @@ export const createCheckoutSession = catchAsync(
 
 export const getOrders = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const orders = await Order.find({ user: userId })
       .populate("restaurant")
       .populate("user");

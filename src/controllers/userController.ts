@@ -18,7 +18,7 @@ export const updateMe = catchAsync(
       "country"
     );
 
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, filterBody, {
+    const updatedUser = await User.findByIdAndUpdate(req.user?._id, filterBody, {
       new: true,
       runValidators: true,
     });

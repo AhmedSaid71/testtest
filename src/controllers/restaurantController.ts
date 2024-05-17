@@ -83,7 +83,7 @@ export const getRestaurant = catchAsync(
 export const createRestaurant = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const existingRestaurant = await Restaurant.findOne({
-      user: req.user._id,
+      user: req.user?._id,
     });
 
     if (existingRestaurant) {
@@ -96,7 +96,7 @@ export const createRestaurant = catchAsync(
     const restaurant = await Restaurant.create({
       ...req.body,
       imageUrl,
-      user: req.user._id,
+      user: req.user?._id,
     });
     res.status(201).json({
       status: "success",
@@ -108,7 +108,7 @@ export const createRestaurant = catchAsync(
 
 export const getUserRestaurant = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.user._id;
+    const id = req.user?._id;
     const restaurant = await Restaurant.findOne({ user: id });
 
     if (!restaurant) {
@@ -124,7 +124,7 @@ export const getUserRestaurant = catchAsync(
 
 export const updateUserRestaurant = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const restaurant = await Restaurant.findOne({ user: req.user._id });
+    const restaurant = await Restaurant.findOne({ user: req.user?._id });
     if (!restaurant) return next(new ApiError("Restaurant not found!", 404));
 
     let filterBody = filterObj(
@@ -143,7 +143,7 @@ export const updateUserRestaurant = catchAsync(
       filterBody = { ...filterBody, imageUrl };
     }
     const updatedRestaurant = await Restaurant.findOneAndUpdate(
-      { user: req.user._id },
+      { user: req.user?._id },
       filterBody,
       {
         new: true,
@@ -160,7 +160,7 @@ export const updateUserRestaurant = catchAsync(
 
 export const getRestaurantOrders = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const restaurant = await Restaurant.findOne({ user: req.user._id });
+    const restaurant = await Restaurant.findOne({ user: req.user?._id });
     if (!restaurant) return next(new ApiError("Restaurant not found!", 404));
 
     const orders = await Order.find({ restaurant: restaurant._id });
@@ -179,7 +179,7 @@ export const updateOrderStatus = catchAsync(
 
     const restaurant = await Restaurant.findById(order.restaurant);
 
-    if (restaurant?.user?._id?.toString() !== req.user._id.toString()) {
+    if (restaurant?.user?._id?.toString() !== req.user?._id.toString()) {
       return next(new ApiError("You Can not do this action!!", 401));
     }
 
